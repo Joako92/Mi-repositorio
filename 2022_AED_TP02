@@ -1,0 +1,101 @@
+import random
+
+# Datos iniciales
+jugador = input("Ingrese nombre del jugador:_")
+monto = int(input("Ingrese monto para el pozo (Entre 10 y 100000):_$"))
+while monto > 100000 or monto < 10:
+    monto = int(input("Error! Ingrese un monto entre 10 y 100000:_$"))
+
+
+# Funcion para agregar dinero al pozo
+def agregar_dinero(pozo):
+    print("APOSTAR:")
+    print("Dispone de $", pozo, sep="")
+    dinero = int(input("Agrega dinero a tu cuenta (Entre 10 y 100000):_$"))
+    while dinero > 100000 or dinero < 10:
+        dinero = int(input("Error! Ingrese un monto entre 10 y 100000:_$"))
+    pozo += dinero
+    print("Dispone de $", pozo, sep="")
+    return pozo
+
+
+# Funcion para apostar en cada mano
+def apuestas(pozo):
+    apuesta = int(input("Realice su apuesta (Debe ser un multiplo de 5):_$"))
+    while apuesta > pozo:
+        apuesta = int(input("ERROR! La apuesta no puede ser mayor al pozo! Realice su apuesta:_$"))
+    while apuesta < 1:
+        apuesta = int(input("ERROR! La apuesta no puede ser menor a $1! Realice su apuesta:_$"))
+    while apuesta % 5 != 0:
+        apuesta = int(input("ERROR! La apuesta debe ser un múltiplo de 5! Realice su apuesta:_$"))
+    return apuesta
+
+
+# Funcion para generar una carta
+def generar_carta():
+    valores = ("A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K")
+    palos = ("♥", "♦", "♣", "♠")
+    valor = random.choice(valores)
+    palo = random.choice(palos)
+    carta = (valor, palo)
+    return carta
+
+
+# Funcion para resolver la primera mano
+def primera_mano(carta_1, carta_2):
+    if carta_1[0] == "J" or carta_1[0] == "Q" or carta_1[0] == "K":
+        valor_1 = 10
+    elif carta_1[0] == "A":
+        valor_1 = 11
+    else:
+        valor_1 = carta_1[0]
+    if carta_2[0] == "J" or carta_2[0] == "Q" or carta_2[0] == "K":
+        valor_2 = 10
+    elif carta_2[0] == "A":
+        valor_2 = 11
+    else:
+        valor_2 = carta_2[0]
+    if carta_1[0] == "A" and carta_2[0] == "A":
+        valor_2 = 1
+    puntaje_parcial = valor_1 + valor_2
+    return puntaje_parcial
+
+
+# Menu principal
+print("MENU:\n1)APOSTAR\n3)SALIR")
+opcion = int(input("Seleccione una opcion:_"))
+print("La opcion elegida es:", opcion)
+while opcion != 1 and opcion != 3 or opcion == "":
+    opcion = int(input("ERROR! Seleccione opcion 1 o 3:_"))
+while opcion != 3:
+    if opcion == 1:
+        monto = agregar_dinero(monto)
+
+    if opcion == 2:
+        print("JUGAR UNA MANO:")
+        print("Dispone de $", monto, sep="")
+        if monto < 5:
+            print("No tenés fondos suficientes para apostar!")
+            opcion = 1
+        ficha = apuestas(monto)
+        monto -= ficha
+        print("Apostaste: $", ficha, sep="")
+        carta_pc_1 = generar_carta()
+        print("Carta 1 croupier:", carta_pc_1)
+        print("Puntaje croupier:", carta_pc_1[0])
+        carta_jugador_1 = generar_carta()
+        carta_jugador_2 = generar_carta()
+        print("Carta 1:", carta_jugador_1, "Carta 2:", carta_jugador_2)
+        puntaje_parcial_jugador = primera_mano(carta_jugador_1, carta_jugador_2)
+        print("Puntaje jugador:", puntaje_parcial_jugador)
+    print("MENU:\n1)APOSTAR\n2)JUGAR UNA MANO\n3)SALIR")
+    opcion = int(input("Seleccione una opcion:_"))
+    while opcion < 1 or opcion > 3:
+        opcion = int(input("ERROR! Seleccione una opcion entre 1 y 3:_"))
+
+# El porcentaje de victorias del jugador.
+# La racha más larga de victorias del croupier.
+# La cantidad de manos donde hubo un blackjack natural
+# El monto máximo que llegó a tener el jugador en el pozo.
+# El monto promedio del que dispuso el jugador para realizar apuestas.
+# La pérdida más grande que sufrió el jugador (si hubo alguna)
